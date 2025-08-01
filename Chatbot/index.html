@@ -1,0 +1,191 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Welcome to Startup Village Club</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: url('camping-bg.jpg') no-repeat center center fixed;
+            background-size: cover;
+            height: 100vh;
+            margin: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            color: black;
+            position: relative;
+        }
+        body::before {
+            content: "";
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            backdrop-filter: blur(12px); 
+            background: rgba(255,255,255,0.15); 
+            z-index: -1;
+        }
+
+        h2 {
+            text-align: center;
+            margin-bottom: 15px;
+            color: black;
+            background: rgba(255,255,255,0.6);
+            padding: 10px;
+            border-radius: 8px;
+        }
+
+        #chatbox {
+            width: 450px;
+            height: 350px;
+            overflow-y: auto;
+            margin-bottom: 15px;
+            padding: 10px;
+            border-radius: 10px;
+            background: rgba(255, 255, 255, 0.75);
+            box-shadow: 0 4px 10px rgba(0,0,0,0.2);
+        }
+
+        .message {
+            margin: 8px 0;
+            padding: 8px 12px;
+            border-radius: 8px;
+            display: inline-block;
+            animation: fadeIn 0.3s ease-in-out;
+            max-width: 80%;
+            color: black;
+        }
+
+        .user {
+            background: rgba(173, 216, 230, 0.6); 
+            float: right;
+            clear: both;
+        }
+
+        .bot {
+            background: rgba(255, 255, 255, 0.6); 
+            float: left;
+            clear: both;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(5px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        #inputBox {
+            display: flex;
+            gap: 10px;
+            width: 450px;
+            background: rgba(255,255,255,0.75);
+            padding: 10px;
+            border-radius: 20px;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.2);
+        }
+
+        input {
+            flex: 1;
+            padding: 10px;
+            border-radius: 20px;
+            border: none;
+            outline: none;
+            font-size: 14px;
+            background: rgba(255,255,255,0.9);
+            color: black;
+        }
+
+        button {
+            padding: 10px 20px;
+            border: none;
+            border-radius: 20px;
+            background: #3498db;
+            color: black;
+            font-size: 14px;
+            cursor: pointer;
+            transition: 0.3s;
+        }
+
+        button:hover {
+            background: #217dbb;
+            color: white;
+        }
+    </style>
+</head>
+<body>
+    <div>
+        <h2>Welcome to Startup Village Club</h2>
+        <div id="chatbox"></div>
+        <div id="inputBox">
+            <input type="text" id="userInput" placeholder="Enter User ID (101-130)">
+            <button onclick="sendMessage()">Send</button>
+        </div>
+    </div>
+
+    <script>
+        let userData = [
+    ["101","Tejaswini","21","15-08-2004","Bangalore","2 years trekking experience","Coorg Hills","Beautiful coffee plantations, trekking, and waterfalls","tejaswini@gmail.com","9876543210"],
+    ["102","Harsha","22","05-06-2003","Mysore","3 years trekking experience","Gokarna Beach","Beach camping, sunset views, kayaking","harsha@gmail.com","9876501234"],
+    ["103","Asha","20","11-12-2005","Hubli","1 year trekking experience","Dandeli Forest","River rafting, jungle safari, wildlife photography","asha@gmail.com","9876512345"],
+    ["104","Ravi","23","10-04-2002","Tumkur","2 years trekking experience","Kudremukh","Mountain treks, grassland views, waterfalls","ravi@gmail.com","9876523456"],
+    ["105","Priya","21","19-09-2004","Bangalore","3 years trekking experience","Savandurga Hills","Rock climbing, fort ruins, nature photography","priya@gmail.com","9876534567"],
+    ["106","Kiran","22","25-07-2003","Mandya","2 years trekking experience","Nandi Hills","Sunrise trek, paragliding spots, historic temples","kiran@gmail.com","9876549876"],
+    ["107","Sneha","20","02-02-2005","Bangalore","1 year trekking experience","Skandagiri Hills","Night trek, stargazing, sunrise view","sneha@gmail.com","9876556789"],
+    ["108","Ramesh","24","11-01-2001","Hassan","3 years trekking experience","Bisle Ghat","Dense forests, wildlife spotting, waterfalls","ramesh@gmail.com","9876567890"],
+    ["109","Anjali","21","14-06-2004","Mysore","2 years trekking experience","Tadiandamol Peak","Highest peak in Coorg, scenic trek, coffee estates","anjali@gmail.com","9876578901"],
+    ["110","Manjunath","23","09-03-2002","Bangalore","4 years trekking experience","Western Ghats","Multi-day trekking, camping in forests, waterfalls","manjunath@gmail.com","9876589012"],
+    ["111","Deepa","20","01-05-2005","Mangalore","2 years trekking experience","Agumbe","Rainforest trekking, waterfalls, sunset point","deepa@gmail.com","9876590123"],
+    ["112","Akash","22","08-08-2003","Bangalore","3 years trekking experience","Chikmagalur","Coffee hills, Mullayanagiri peak, homestays","akash@gmail.com","9876601234"],
+    ["113","Kavya","21","17-10-2004","Mysore","1 year trekking experience","Bandaje Falls","Trekking through dense forests to waterfalls","kavya@gmail.com","9876612345"],
+    ["114","Sanjay","23","23-12-2002","Davangere","2 years trekking experience","Hebbe Falls","Forest trek, waterfall swimming, scenic beauty","sanjay@gmail.com","9876623456"],
+    ["115","Megha","20","05-09-2005","Hubli","1 year trekking experience","Kemmangundi","Hillside trek, waterfalls, flower gardens","megha@gmail.com","9876634567"],
+    ["116","Varun","24","15-07-2001","Bangalore","3 years trekking experience","Jog Falls","River treks, camping near waterfalls","varun@gmail.com","9876645678"],
+    ["117","Divya","22","28-03-2003","Mysore","2 years trekking experience","BR Hills","Wildlife trekking, camping in forest reserves","divya@gmail.com","9876656789"],
+    ["118","Arjun","21","06-06-2004","Hassan","3 years trekking experience","Sakleshpur","Railway track trek, coffee estates, camping","arjun@gmail.com","9876667890"],
+    ["119","Shreya","20","22-01-2005","Bangalore","2 years trekking experience","Kodachadri","Sunset trek, jeep trails, waterfalls","shreya@gmail.com","9876678901"],
+    ["120","Rohit","23","19-04-2002","Tumkur","3 years trekking experience","Makalidurga","Rock trek, railway track, lake view","rohit@gmail.com","9876689012"],
+    ["121","Nisha","21","04-11-2004","Mangalore","2 years trekking experience","Kudlu Falls","Forest trek, waterfall pool, picnic spot","nisha@gmail.com","9876690123"],
+    ["122","Suresh","22","12-02-2003","Bangalore","3 years trekking experience","Ramanagara","Rock climbing, bird watching, trekking trails","suresh@gmail.com","9876701234"],
+    ["123","Pooja","20","16-08-2005","Mysore","1 year trekking experience","Antaragange Hills","Night trekking, cave exploration, sunrise","pooja@gmail.com","9876712345"],
+    ["124","Vikram","24","27-05-2001","Hubli","4 years trekking experience","Sharavathi Valley","River trekking, waterfalls, dense forests","vikram@gmail.com","9876723456"],
+    ["125","Radha","22","08-03-2003","Bangalore","3 years trekking experience","Baba Budangiri","Hill trekking, coffee plantations, caves","radha@gmail.com","9876734567"],
+    ["126","Ganesh","21","02-09-2004","Hassan","2 years trekking experience","Charmadi Ghat","Forest trek, ghats, waterfalls","ganesh@gmail.com","9876745678"],
+    ["127","Chitra","23","19-12-2002","Bangalore","2 years trekking experience","Yana Rocks","Rock formations, forest trek, waterfalls","chitra@gmail.com","9876756789"],
+    ["128","Lokesh","20","10-04-2005","Mysore","1 year trekking experience","Kabini Forest","Wildlife safaris, trekking, river camping","lokesh@gmail.com","9876767890"],
+    ["129","Anita","21","01-06-2004","Tumkur","2 years trekking experience","Hogenakkal Falls","Waterfall trek, boating, swimming","anita@gmail.com","9876778901"],
+    ["130","Rahul","22","03-03-2003","Davangere","3 years trekking experience","Savandurga Fort","Trekking, historical ruins, panoramic views","rahul@gmail.com","9876789012"]
+];
+
+        function sendMessage() {
+            let userID = document.getElementById("userInput").value.trim();
+            if (!userID) return;
+
+            let chatbox = document.getElementById("chatbox");
+            chatbox.innerHTML += `<div class='message user'>You: ${userID}</div>`;
+
+            let found = userData.find(row => row[0] == userID);
+
+            if (found) {
+                chatbox.innerHTML += `<div class='message bot'>
+                    <b>Name:</b> ${found[1]}<br>
+                    <b>Age:</b> ${found[2]}<br>
+                    <b>DOB:</b> ${found[3]}<br>
+                    <b>Place:</b> ${found[4]}<br>
+                    <b>Experience:</b> ${found[5]}<br>
+                    <b>Camp Place:</b> ${found[6]}<br>
+                    <b>Camp Details:</b> ${found[7]}<br>
+                    <b>Email:</b> ${found[8]}<br>
+                    <b>Phone:</b> ${found[9]}
+                </div>`;
+            } else {
+                chatbox.innerHTML += `<div class='message bot'>
+                    Sorry, I couldn't find that User ID. Please enter between 101 to 130.
+                </div>`;
+            }
+
+            chatbox.scrollTop = chatbox.scrollHeight;
+            document.getElementById("userInput").value = '';
+        }
+    </script>
+</body>
+</html>
